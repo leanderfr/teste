@@ -1,6 +1,7 @@
 
 # Use the official lightweight Alpine-based Redis image
-FROM redis:7.2-alpine
+#FROM redis:7.2-alpine
+FROM redis:8.10.2 
 
 # Set the working directory inside the container
 WORKDIR /data

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/redis/go-redis/v9"
 
@@ -28,10 +29,13 @@ func main() {
 
 	// 1. Connect to Redis server
 	rdb = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     "leander.vps-kinghost.net:6379",
 		Password: "sucesso123",
 		DB:       0,
 	})
+
+	//		Addr:     "127.0.0.1:6379",
+	//	Password: "sucesso123",
 
 	fmt.Println("22222")
 
@@ -75,13 +79,56 @@ func HelloWorld(c *fiber.Ctx) error {
 
 	//	return c.Status(fiber.StatusOK).SendString(" OK *** OK *** Ok  **  OK ***")
 
-	val, err := rdb.Get(ctx_redis, "user_name").Result()
-	if err == redis.Nil {
-		return c.Status(fiber.StatusOK).SendString("Key does not exist")
-	} else if err != nil {
-		panic(err)
-	} else {
-		return c.Status(fiber.StatusOK).SendString("Retrieved value: " + val)
+	// Store JSON document using JSONSet
+	doc := `{
+        "name": "Alice",
+        "age": 30,
+        "email": "alice@example.com",
+        "roles": ["admin", "user"],
+        "address": {"city": "Portland", "zip": "97201"}
+    }`
+
+	err := rdb.Do(ctx_redis, "JSON.SET", "aquivaiip2", "$", doc).Err()
+	if err != nil {
+		log.Fatal(err)
 	}
+	fmt.Println("Stored")
+
+	// Get full document
+	result, err := rdb.Do(ctx_redis, "JSON.GET", "aquivaiip2").Text()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(result)
+
+	// Get nested field using JSONPath
+	name, err := rdb.Do(ctx_redis, "JSON.GET", "aquivaiip2", "$.name").Text()
+	fmt.Println(name) // ["Alice"]
+
+	city, err := rdb.Do(ctx_redis, "JSON.GET", "aquivaiip2", "$.address.city").Text()
+	fmt.Println(city) // ["Portland"]
+
+	/*
+
+
+
+		val, err := rdb.Get(ctx_redis, "user_name").Result()
+		if err == redis.Nil {
+
+			err := rdb.Set(ctx_redis, "user_name", "Fabian", 0).Err()
+			if err != nil {
+				panic(err)
+			}
+			return c.Status(fiber.StatusOK).SendString("Successfully set 'user_name'")
+
+		} else if err != nil {
+			panic(err)
+		} else {
+			return c.Status(fiber.StatusOK).SendString("Retrieved value: " + val + "--" + greeting)
+		}
+
+	*/
+
+	return c.Status(fiber.StatusOK).SendString("Nome: " + name + "  Cidade: " + city)
 
 }
