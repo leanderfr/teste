@@ -15,6 +15,8 @@ RUN go mod download
 
 COPY . /app
 COPY .env /app
+COPY leanderdev.key /app
+COPY leanderdev.pem /app
 copy leanderdev.crt /app
 
 # Install the ca-certificate package
@@ -31,14 +33,16 @@ WORKDIR /app
 COPY --from=build /app/leanderdev.crt /etc/ssl/certs/
 COPY --from=build /app/api ./
 COPY --from=build /app/.env ./
-# indispensable copy
-COPY --from=build /app/tempfiles ./tempfiles
+
+COPY --from=build /app/leanderdev.key ./
+COPY --from=build /app/leanderdev.pem ./
+
 
 # Update the CA certificates in the container
 #RUN update-ca-certificates
 
 
-EXPOSE 8070
+EXPOSE 8443
 
 CMD [ "./api" ]
 
