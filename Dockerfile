@@ -1,6 +1,6 @@
 
 
-FROM golang:1.24.2 AS build
+FROM golang:1.26.3 AS build
 
 #   ADD https://github.com/golang/go/raw/master/lib/time/zoneinfo.zip /zoneinfo.zip
 #   ENV ZONEINFO /zoneinfo.zip
