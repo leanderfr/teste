@@ -31,6 +31,7 @@ COPY --from=build /app/leanderdev.crt /etc/ssl/certs/
 
 COPY --from=build /app/leanderdev.key ./
 COPY --from=build /app/leanderdev.pem ./
+COPY --from=build /app/api ./
 
 
 # Update the CA certificates in the container
@@ -42,7 +43,7 @@ CMD [ "./api" ]
 
 #   docker build --rm -t rentacar_backend_golang .
 
-# docker run  -d -p 8070:8070 --name rentacar_backend_golang rentacar_backend_golang
+# docker run  -d -p 8443:8443 --name rentacar_backend_golang rentacar_backend_golang
 
 
 
