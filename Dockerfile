@@ -1,21 +1,51 @@
 
-# Use the official lightweight Alpine-based Redis image
-#FROM redis:7.2-alpine
-FROM redis:8.10.2 
 
-# Set the working directory inside the container
-WORKDIR /data
+FROM golang:1.24.2 AS build
 
-# Copy your custom Redis configuration file into the container
-COPY redis.conf /usr/local/etc/redis/redis.conf
+#   ADD https://github.com/golang/go/raw/master/lib/time/zoneinfo.zip /zoneinfo.zip
+#   ENV ZONEINFO /zoneinfo.zip
 
-# Expose the default Redis port
-EXPOSE 6379
 
-# Start Redis server using the custom configuration file
-CMD [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+WORKDIR /app
 
 
 
-#  docker build -t my-redis .
-#  docker run -d --name redis-app -p 6379:6379 -v ~/redis_data:/data --restart always my-redis
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . /app
+COPY .env /app
+copy leanderdev.crt /app
+
+# Install the ca-certificate package
+#RUN apt-get update && apt-get install -y ca-certificates
+
+RUN CGO_ENABLED=0 GOOS=linux go build -o api main.go
+
+
+FROM scratch
+
+WORKDIR /app
+
+
+COPY --from=build /app/leanderdev.crt /etc/ssl/certs/
+COPY --from=build /app/api ./
+COPY --from=build /app/.env ./
+# indispensable copy
+COPY --from=build /app/tempfiles ./tempfiles
+
+# Update the CA certificates in the container
+#RUN update-ca-certificates
+
+
+EXPOSE 8070
+
+CMD [ "./api" ]
+
+#   docker build --rm -t rentacar_backend_golang .
+
+# docker run  -d -p 8070:8070 --name rentacar_backend_golang rentacar_backend_golang
+
+
+
+
