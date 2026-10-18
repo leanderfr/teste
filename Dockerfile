@@ -8,15 +8,13 @@ FROM golang:1.24.2 AS build
 
 WORKDIR /app
 
-
-
 COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . /app
 COPY leanderdev.key /app
 COPY leanderdev.pem /app
-copy leanderdev.crt /app
+COPY leanderdev.crt /app
 
 # Install the ca-certificate package
 #RUN apt-get update && apt-get install -y ca-certificates
