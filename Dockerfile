@@ -41,8 +41,7 @@ COPY --from=build /app/leanderdev.pem ./
 # Update the CA certificates in the container
 #RUN update-ca-certificates
 
-
-EXPOSE 8443
+EXPOSE 8445
 
 CMD [ "./api" ]
 

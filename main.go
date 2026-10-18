@@ -39,6 +39,7 @@ func main() {
 	app := fiber.New()
 	app.Get("/", func(c *fiber.Ctx) error {
 		fmt.Println("rodando https")
+		fmt.Println("rodando https 222")
 
 		return c.SendString("Secure connection")
 	})
