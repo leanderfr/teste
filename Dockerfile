@@ -14,10 +14,8 @@ RUN go mod download
 COPY . /app
 COPY privkey.pem /app
 COPY fullchain.pem /app
-#COPY leanderdev.crt /app
+COPY cert.pem /app
 
-# Install the ca-certificate package
-#RUN apt-get update && apt-get install -y ca-certificates
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o api main.go
 
@@ -25,14 +23,18 @@ FROM scratch
 
 WORKDIR /app
 
-#COPY --from=build /app/leanderdev.crt /etc/ssl/certs/
+COPY --from=build /app/cert.pem /etc/ssl/certs/
+
+# Install the ca-certificate package
+RUN apt-get update && apt-get install -y ca-certificates
+
 
 COPY --from=build /app/fullchain.pem ./
 COPY --from=build /app/privkey.pem ./
 COPY --from=build /app/api ./
 
 # Update the CA certificates in the container
-#RUN update-ca-certificates
+RUN update-ca-certificates
 
 EXPOSE 8443
 
