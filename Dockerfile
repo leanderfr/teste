@@ -16,7 +16,6 @@ COPY privkey.pem /app
 COPY fullchain.pem /app
 COPY cert.pem /app
 
-
 RUN CGO_ENABLED=0 GOOS=linux go build -o api main.go
 
 FROM scratch
@@ -34,7 +33,7 @@ COPY --from=build /app/privkey.pem ./
 COPY --from=build /app/api ./
 
 # Update the CA certificates in the container
-RUN update-ca-certificates
+#RUN update-ca-certificates
 
 EXPOSE 8443
 
