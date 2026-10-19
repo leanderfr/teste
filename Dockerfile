@@ -26,7 +26,7 @@ WORKDIR /app
 COPY --from=build /app/cert.pem /etc/ssl/certs/
 
 # Install the ca-certificate package
-RUN apt-get update && apt-get install -y ca-certificates
+#RUN apt-get update && apt-get install -y ca-certificates
 
 
 COPY --from=build /app/fullchain.pem ./
