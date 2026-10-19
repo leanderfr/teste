@@ -44,7 +44,7 @@ func main() {
 		c.Set(fiber.HeaderContentType, fiber.MIMETextPlainCharsetUTF8)
 		return c.SendString("Secure connection")
 	})
-	log.Fatal(app.ListenTLS(":8443", "./fullchain.pem", "pem"))
+	log.Fatal(app.ListenTLS(":8443", "./fullchain.pem", "privkey.pem"))
 
 }
 
