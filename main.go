@@ -41,9 +41,10 @@ func main() {
 		fmt.Println("rodando https")
 		fmt.Println("rodando https 222")
 
+		c.Set(fiber.HeaderContentType, fiber.MIMETextPlainCharsetUTF8)
 		return c.SendString("Secure connection")
 	})
-	log.Fatal(app.ListenTLS(":8443", "./fullchain.pem", "./privkey.key"))
+	log.Fatal(app.ListenTLS(":8443", "./fullchain.pem", "pem"))
 
 }
 
@@ -51,7 +52,7 @@ func HelloWorld(c *fiber.Ctx) error {
 
 	fmt.Println("2222")
 
-	c.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
+	c.Set(fiber.HeaderContentType, fiber.MIMETextPlainCharsetUTF8)
 
 	return c.Status(fiber.StatusOK).SendString(" OK *** OK *** Ok  **  OK ***")
 

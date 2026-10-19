@@ -14,7 +14,7 @@ RUN go mod download
 COPY . /app
 COPY privkey.pem /app
 COPY fullchain.pem /app
-COPY leanderdev.crt /app
+#COPY leanderdev.crt /app
 
 # Install the ca-certificate package
 #RUN apt-get update && apt-get install -y ca-certificates
