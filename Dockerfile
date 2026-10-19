@@ -12,8 +12,8 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . /app
-COPY leanderdev.key /app
-COPY leanderdev.pem /app
+COPY privkey.pem /app
+COPY fullchain.pem /app
 COPY leanderdev.crt /app
 
 # Install the ca-certificate package
@@ -21,18 +21,15 @@ COPY leanderdev.crt /app
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o api main.go
 
-
 FROM scratch
 
 WORKDIR /app
 
+#COPY --from=build /app/leanderdev.crt /etc/ssl/certs/
 
-COPY --from=build /app/leanderdev.crt /etc/ssl/certs/
-
-COPY --from=build /app/leanderdev.key ./
-COPY --from=build /app/leanderdev.pem ./
+COPY --from=build /app/fullchain.pem ./
+COPY --from=build /app/privkey.pem ./
 COPY --from=build /app/api ./
-
 
 # Update the CA certificates in the container
 #RUN update-ca-certificates
@@ -41,9 +38,9 @@ EXPOSE 8443
 
 CMD [ "./api" ]
 
-#   docker build --rm -t rentacar_backend_golang .
+#   docker build --rm -t https .
 
-# docker run  -d -p 8443:8443 --name rentacar_backend_golang rentacar_backend_golang
+# docker run  -d -p 8443:8443 --name https https
 
 
 

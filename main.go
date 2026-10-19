@@ -43,7 +43,7 @@ func main() {
 
 		return c.SendString("Secure connection")
 	})
-	log.Fatal(app.ListenTLS(":8443", "./leanderdev.pem", "./leanderdev.key"))
+	log.Fatal(app.ListenTLS(":8443", "./fullchain.pem", "./privkey.key"))
 
 }
 
